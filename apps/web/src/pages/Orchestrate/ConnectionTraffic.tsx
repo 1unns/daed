@@ -16,13 +16,13 @@ export function ConnectionTraffic() {
   const { data: connections } = useConnectionTrafficQuery()
 
   return (
-    <Card className="flex flex-col flex-1 h-full max-h-[500px]">
+    <Card className="flex flex-col w-full max-h-[500px] shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between py-4 pb-2">
         <CardTitle className="text-base font-semibold text-blue-500/80">活动连接</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 overflow-auto p-0">
+      <CardContent className="flex-1 overflow-y-auto overflow-x-hidden p-0">
         <Table>
-          <TableHeader className="sticky top-0 bg-background/95 backdrop-blur z-10">
+          <TableHeader className="sticky top-0 bg-background/95 backdrop-blur z-10 shadow-sm">
             <TableRow>
               <TableHead className="w-[200px]">域名 / IP</TableHead>
               <TableHead>状态</TableHead>
