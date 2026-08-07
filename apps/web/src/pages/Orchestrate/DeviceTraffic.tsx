@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
 import { useDeviceTrafficQuery, useClearTrafficStatsMutation } from '~/apis'
-import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
+import { ArrowDown, ArrowUp, Trash2, MonitorSmartphone } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 
 function formatBytes(value: number) {
@@ -20,7 +20,10 @@ export function DeviceTraffic() {
   return (
     <Card className="flex flex-col w-full max-h-[500px] shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between py-4 pb-2">
-        <CardTitle className="text-base font-semibold text-blue-500/80">设备流量</CardTitle>
+        <CardTitle className="flex items-center gap-2 text-lg text-primary">
+          <MonitorSmartphone className="w-5 h-5" />
+          设备流量
+        </CardTitle>
         <Button
           variant="ghost"
           size="icon"
@@ -37,10 +40,8 @@ export function DeviceTraffic() {
           <TableHeader className="sticky top-0 bg-background/95 backdrop-blur z-10 shadow-sm">
             <TableRow>
               <TableHead className="w-[150px]">IP</TableHead>
-              <TableHead>代理上传</TableHead>
-              <TableHead>代理下载</TableHead>
-              <TableHead>直连上传</TableHead>
-              <TableHead>直连下载</TableHead>
+              <TableHead>上传</TableHead>
+              <TableHead>下载</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -63,22 +64,16 @@ export function DeviceTraffic() {
                   </div>
                 </TableCell>
                 <TableCell className="text-xs">
-                  <div className="flex items-center text-muted-foreground">
-                    <ArrowUp className="mr-1 h-3 w-3" />
-                    {formatBytes(Number(device.directUploadTotal))}
-                  </div>
-                </TableCell>
-                <TableCell className="text-xs">
-                  <div className="flex items-center text-muted-foreground">
+                  <div className="flex items-center text-cyan-500">
                     <ArrowDown className="mr-1 h-3 w-3" />
-                    {formatBytes(Number(device.directDownloadTotal))}
+                    {formatBytes(Number(device.proxyDownloadTotal))}
                   </div>
                 </TableCell>
               </TableRow>
             ))}
             {!devices?.length && (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
                   暂无设备数据
                 </TableCell>
               </TableRow>
