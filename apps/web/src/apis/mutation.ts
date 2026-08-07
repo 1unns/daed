@@ -673,6 +673,25 @@ export function useImportNodesMutation() {
   })
 }
 
+export function useClearTrafficStatsMutation() {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => {
+      const query = `
+        mutation ClearTrafficStats {
+          clearTrafficStats
+        }
+      `
+      return gqlClient.request(query)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_TRAFFIC })
+    },
+  })
+}
+
 export function useRemoveNodesMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()

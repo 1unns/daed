@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
-import { useDeviceTrafficQuery } from '~/apis'
-import { ArrowDown, ArrowUp } from 'lucide-react'
+import { useDeviceTrafficQuery, useClearTrafficStatsMutation } from '~/apis'
+import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
+import { Button } from '~/components/ui/button'
 
 function formatBytes(value: number) {
   if (value < 1024) return `${value.toFixed(0)} B`
@@ -14,11 +15,22 @@ function formatBytes(value: number) {
 export function DeviceTraffic() {
   const { t } = useTranslation()
   const { data: devices } = useDeviceTrafficQuery()
+  const clearMutation = useClearTrafficStatsMutation()
 
   return (
     <Card className="flex flex-col flex-1 h-full max-h-[500px]">
       <CardHeader className="flex flex-row items-center justify-between py-4 pb-2">
         <CardTitle className="text-base font-semibold text-blue-500/80">设备流量</CardTitle>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-muted-foreground hover:text-red-500"
+          onClick={() => clearMutation.mutate()}
+          disabled={clearMutation.isPending}
+          title="清理流量数据"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
       </CardHeader>
       <CardContent className="flex-1 overflow-auto p-0">
         <Table>
