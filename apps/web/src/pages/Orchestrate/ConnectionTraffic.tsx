@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
 import { useConnectionTrafficQuery } from '~/apis'
@@ -14,6 +15,25 @@ function formatBytes(value: number) {
 export function ConnectionTraffic() {
   const { t } = useTranslation()
   const { data: connections } = useConnectionTrafficQuery()
+
+  const aggregatedConnections = useMemo(() => {
+    if (!connections) return []
+    const map = new Map<string, { ip: string; uploadTotal: number; downloadTotal: number }>()
+    for (const conn of connections) {
+      const existing = map.get(conn.ip)
+      if (existing) {
+        existing.uploadTotal += Number(conn.uploadTotal)
+        existing.downloadTotal += Number(conn.downloadTotal)
+      } else {
+        map.set(conn.ip, {
+          ip: conn.ip,
+          uploadTotal: Number(conn.uploadTotal),
+          downloadTotal: Number(conn.downloadTotal),
+        })
+      }
+    }
+    return Array.from(map.values())
+  }, [connections])
 
   return (
     <Card className="flex flex-col w-full max-h-[500px] shadow-sm">
@@ -33,8 +53,8 @@ export function ConnectionTraffic() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {connections?.map((conn) => (
-              <TableRow key={conn.id}>
+            {aggregatedConnections.map((conn) => (
+              <TableRow key={conn.ip}>
                 <TableCell className="font-mono text-xs">
                   <div>{conn.ip}</div>
                 </TableCell>
@@ -52,7 +72,7 @@ export function ConnectionTraffic() {
                 </TableCell>
               </TableRow>
             ))}
-            {!connections?.length && (
+            {!aggregatedConnections?.length && (
               <TableRow>
                 <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
                   暂无连接数据

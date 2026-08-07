@@ -63,12 +63,7 @@ export function DeviceTraffic() {
                     {formatBytes(Number(device.proxyDownloadTotal))}
                   </div>
                 </TableCell>
-                <TableCell className="text-xs">
-                  <div className="flex items-center text-cyan-500">
-                    <ArrowDown className="mr-1 h-3 w-3" />
-                    {formatBytes(Number(device.proxyDownloadTotal))}
-                  </div>
-                </TableCell>
+
               </TableRow>
             ))}
             {!devices?.length && (
