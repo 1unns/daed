@@ -119,43 +119,53 @@ export function DeviceTraffic() {
                   {isExpanded && (
                     <TableRow className="bg-muted/20 hover:bg-muted/20">
                       <TableCell colSpan={3} className="p-0 border-b-0">
-                        <div className="px-8 py-3 text-xs">
+                        <div className="py-3 text-xs">
                           {activeConnections.length > 0 ? (
                             <div className="space-y-1">
-                              <div className="text-muted-foreground font-medium mb-2 border-b border-border/50 pb-1">
+                              <div className="text-muted-foreground font-medium mb-2 border-b border-border/50 pb-1 pl-12 pr-4">
                                 正在活动的连接 ({activeConnections.length})
                               </div>
-                              <div className="max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                                {activeConnections
-                                  // Sort active connections by traffic size descending
-                                  .sort((a, b) => (Number(b.uploadTotal) + Number(b.downloadTotal)) - (Number(a.uploadTotal) + Number(a.downloadTotal)))
-                                  .map(conn => {
-                                    // id format: "srcIp:srcPort-dstIp:dstPort"
-                                    const dstPort = conn.id.split('-')[1]?.split(':')[1] || ''
-                                    return (
-                                      <div key={conn.id} className="grid grid-cols-[1fr_80px_80px] gap-4 py-1.5 border-b border-border/30 last:border-0 hover:bg-muted/40 rounded px-2 transition-colors">
-                                        <div 
-                                          className="font-mono text-muted-foreground flex items-center cursor-pointer hover:text-primary transition-colors min-w-0" 
-                                          title={`点击查询归属地\n${conn.ip}:${dstPort}`}
-                                          onClick={(e) => handleIpClick(e, conn.ip)}
-                                        >
-                                          <span className="text-foreground/80 shrink-0">{conn.ip}</span>
-                                          <span className="text-foreground/50 shrink-0">:{dstPort}</span>
-                                          {ipInfo[conn.ip]?.loading && <span className="text-muted-foreground text-[10px] whitespace-nowrap ml-1 shrink-0">查询中...</span>}
-                                          {ipInfo[conn.ip]?.error && <span className="text-red-400 text-[10px] whitespace-nowrap ml-1 shrink-0">查询失败</span>}
-                                          {ipInfo[conn.ip]?.org && <span className="text-muted-foreground text-[10px] truncate ml-1" title={ipInfo[conn.ip].org}>({ipInfo[conn.ip].org})</span>}
-                                        </div>
-                                        <div className="text-orange-500/80 flex items-center justify-end font-mono">
-                                          <ArrowUp className="mr-1 h-[10px] w-[10px]" />
-                                          {formatBytes(Number(conn.uploadTotal))}
-                                        </div>
-                                        <div className="text-cyan-500/80 flex items-center justify-end font-mono">
-                                          <ArrowDown className="mr-1 h-[10px] w-[10px]" />
-                                          {formatBytes(Number(conn.downloadTotal))}
-                                        </div>
-                                      </div>
-                                    )
-                                })}
+                              <div className="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                <Table>
+                                  <TableBody>
+                                    {activeConnections
+                                      // Sort active connections by traffic size descending
+                                      .sort((a, b) => (Number(b.uploadTotal) + Number(b.downloadTotal)) - (Number(a.uploadTotal) + Number(a.downloadTotal)))
+                                      .map(conn => {
+                                        // id format: "srcIp:srcPort-dstIp:dstPort"
+                                        const dstPort = conn.id.split('-')[1]?.split(':')[1] || ''
+                                        return (
+                                          <TableRow key={conn.id} className="border-b border-border/30 last:border-0 hover:bg-muted/40 transition-colors">
+                                            <TableCell className="w-[150px] p-0 py-1.5 align-middle pl-12 pr-4">
+                                              <div 
+                                                className="font-mono text-muted-foreground flex items-center cursor-pointer hover:text-primary transition-colors min-w-0" 
+                                                title={`点击查询归属地\n${conn.ip}:${dstPort}`}
+                                                onClick={(e) => handleIpClick(e, conn.ip)}
+                                              >
+                                                <span className="text-foreground/80 shrink-0">{conn.ip}</span>
+                                                <span className="text-foreground/50 shrink-0">:{dstPort}</span>
+                                                {ipInfo[conn.ip]?.loading && <span className="text-muted-foreground text-[10px] whitespace-nowrap ml-1 shrink-0">查询中...</span>}
+                                                {ipInfo[conn.ip]?.error && <span className="text-red-400 text-[10px] whitespace-nowrap ml-1 shrink-0">查询失败</span>}
+                                                {ipInfo[conn.ip]?.org && <span className="text-muted-foreground text-[10px] truncate ml-1" title={ipInfo[conn.ip].org}>({ipInfo[conn.ip].org})</span>}
+                                              </div>
+                                            </TableCell>
+                                            <TableCell className="w-[100px] text-right p-0 py-1.5 px-4 align-middle">
+                                              <div className="flex items-center justify-end text-orange-500/80 font-mono text-xs">
+                                                <ArrowUp className="mr-1 h-[10px] w-[10px]" />
+                                                {formatBytes(Number(conn.uploadTotal))}
+                                              </div>
+                                            </TableCell>
+                                            <TableCell className="w-[100px] text-right p-0 py-1.5 px-4 align-middle">
+                                              <div className="flex items-center justify-end text-cyan-500/80 font-mono text-xs">
+                                                <ArrowDown className="mr-1 h-[10px] w-[10px]" />
+                                                {formatBytes(Number(conn.downloadTotal))}
+                                              </div>
+                                            </TableCell>
+                                          </TableRow>
+                                        )
+                                    })}
+                                  </TableBody>
+                                </Table>
                               </div>
                             </div>
                           ) : (

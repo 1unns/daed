@@ -88,8 +88,8 @@ export function ConnectionTraffic() {
           <TableHeader className="sticky top-0 bg-background/95 backdrop-blur z-10 shadow-sm">
             <TableRow>
               <TableHead className="w-[200px]">IP</TableHead>
-              <TableHead>上传</TableHead>
-              <TableHead>下载</TableHead>
+              <TableHead className="text-right w-[100px]">上传</TableHead>
+              <TableHead className="text-right w-[100px]">下载</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -108,13 +108,13 @@ export function ConnectionTraffic() {
                   </div>
                 </TableCell>
                 <TableCell className="text-xs">
-                  <div className="flex items-center text-orange-500">
+                  <div className="flex items-center justify-end text-orange-500">
                     <ArrowUp className="mr-1 h-3 w-3" />
                     {formatBytes(Number(conn.uploadTotal))}
                   </div>
                 </TableCell>
                 <TableCell className="text-xs">
-                  <div className="flex items-center text-cyan-500">
+                  <div className="flex items-center justify-end text-cyan-500">
                     <ArrowDown className="mr-1 h-3 w-3" />
                     {formatBytes(Number(conn.downloadTotal))}
                   </div>
