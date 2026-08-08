@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
 import { Button } from '~/components/ui/button'
@@ -17,6 +17,26 @@ export function ConnectionTraffic() {
   const { t } = useTranslation()
   const { data: connections } = useConnectionTrafficQuery()
   const clearMutation = useClearTrafficStatsMutation()
+  const [ipInfo, setIpInfo] = useState<Record<string, { org?: string; loading?: boolean; error?: boolean }>>({})
+
+  const handleIpClick = async (ip: string) => {
+    if (ipInfo[ip]) return;
+    setIpInfo(prev => ({ ...prev, [ip]: { loading: true } }))
+    try {
+      const res = await fetch(`https://get.geojs.io/v1/ip/geo/${ip}.json`)
+      if (!res.ok) throw new Error('Failed to fetch')
+      const data = await res.json()
+      setIpInfo(prev => ({ 
+        ...prev, 
+        [ip]: { 
+          org: data.organization_name || data.organization || data.country || 'Unknown', 
+          loading: false 
+        } 
+      }))
+    } catch (e) {
+      setIpInfo(prev => ({ ...prev, [ip]: { error: true, loading: false } }))
+    }
+  }
 
   const aggregatedConnections = useMemo(() => {
     if (!connections) return []
@@ -76,7 +96,16 @@ export function ConnectionTraffic() {
             {aggregatedConnections.map((conn) => (
               <TableRow key={conn.ip}>
                 <TableCell className="font-mono text-xs">
-                  <div>{conn.ip}</div>
+                  <div 
+                    className="cursor-pointer hover:text-primary transition-colors flex flex-col gap-0.5"
+                    onClick={() => handleIpClick(conn.ip)}
+                    title="点击查询 IP 归属"
+                  >
+                    <span>{conn.ip}</span>
+                    {ipInfo[conn.ip]?.loading && <span className="text-muted-foreground text-[10px]">查询中...</span>}
+                    {ipInfo[conn.ip]?.error && <span className="text-red-400 text-[10px]">查询失败</span>}
+                    {ipInfo[conn.ip]?.org && <span className="text-muted-foreground text-[10px] leading-tight">({ipInfo[conn.ip].org})</span>}
+                  </div>
                 </TableCell>
                 <TableCell className="text-xs">
                   <div className="flex items-center text-orange-500">
