@@ -19,6 +19,27 @@ export function DeviceTraffic() {
   const { data: connections } = useConnectionTrafficQuery()
   const clearMutation = useClearTrafficStatsMutation()
   const [expandedIps, setExpandedIps] = useState<Set<string>>(new Set())
+  const [ipInfo, setIpInfo] = useState<Record<string, { org?: string; loading?: boolean; error?: boolean }>>({})
+
+  const handleIpClick = async (e: React.MouseEvent, ip: string) => {
+    e.stopPropagation()
+    if (ipInfo[ip]) return;
+    setIpInfo(prev => ({ ...prev, [ip]: { loading: true } }))
+    try {
+      const res = await fetch(`https://get.geojs.io/v1/ip/geo/${ip}.json`)
+      if (!res.ok) throw new Error('Failed to fetch')
+      const data = await res.json()
+      setIpInfo(prev => ({ 
+        ...prev, 
+        [ip]: { 
+          org: data.organization_name || data.organization || data.country || 'Unknown', 
+          loading: false 
+        } 
+      }))
+    } catch (err) {
+      setIpInfo(prev => ({ ...prev, [ip]: { error: true, loading: false } }))
+    }
+  }
 
   const toggleExpand = (ip: string) => {
     setExpandedIps((prev) => {
@@ -52,8 +73,8 @@ export function DeviceTraffic() {
           <TableHeader className="sticky top-0 bg-background/95 backdrop-blur z-10 shadow-sm">
             <TableRow>
               <TableHead className="w-[150px]">IP</TableHead>
-              <TableHead>上传</TableHead>
-              <TableHead>下载</TableHead>
+              <TableHead className="text-right w-[100px]">上传</TableHead>
+              <TableHead className="text-right w-[100px]">下载</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -83,13 +104,13 @@ export function DeviceTraffic() {
                       </div>
                     </TableCell>
                     <TableCell className="text-xs">
-                      <div className="flex items-center text-orange-500">
+                      <div className="flex items-center justify-end text-orange-500">
                         <ArrowUp className="mr-1 h-3 w-3" />
                         {formatBytes(Number(device.proxyUploadTotal))}
                       </div>
                     </TableCell>
                     <TableCell className="text-xs">
-                      <div className="flex items-center text-cyan-500">
+                      <div className="flex items-center justify-end text-cyan-500">
                         <ArrowDown className="mr-1 h-3 w-3" />
                         {formatBytes(Number(device.proxyDownloadTotal))}
                       </div>
@@ -113,9 +134,16 @@ export function DeviceTraffic() {
                                     const dstPort = conn.id.split('-')[1]?.split(':')[1] || ''
                                     return (
                                       <div key={conn.id} className="grid grid-cols-[1fr_80px_80px] gap-4 py-1.5 border-b border-border/30 last:border-0 hover:bg-muted/40 rounded px-2 transition-colors">
-                                        <div className="font-mono truncate text-muted-foreground" title={`${conn.ip}:${dstPort}`}>
-                                          <span className="text-foreground/80">{conn.ip}</span>
-                                          <span className="text-foreground/50">:{dstPort}</span>
+                                        <div 
+                                          className="font-mono text-muted-foreground flex items-center cursor-pointer hover:text-primary transition-colors min-w-0" 
+                                          title={`点击查询归属地\n${conn.ip}:${dstPort}`}
+                                          onClick={(e) => handleIpClick(e, conn.ip)}
+                                        >
+                                          <span className="text-foreground/80 shrink-0">{conn.ip}</span>
+                                          <span className="text-foreground/50 shrink-0">:{dstPort}</span>
+                                          {ipInfo[conn.ip]?.loading && <span className="text-muted-foreground text-[10px] whitespace-nowrap ml-1 shrink-0">查询中...</span>}
+                                          {ipInfo[conn.ip]?.error && <span className="text-red-400 text-[10px] whitespace-nowrap ml-1 shrink-0">查询失败</span>}
+                                          {ipInfo[conn.ip]?.org && <span className="text-muted-foreground text-[10px] truncate ml-1" title={ipInfo[conn.ip].org}>({ipInfo[conn.ip].org})</span>}
                                         </div>
                                         <div className="text-orange-500/80 flex items-center justify-end font-mono">
                                           <ArrowUp className="mr-1 h-[10px] w-[10px]" />
