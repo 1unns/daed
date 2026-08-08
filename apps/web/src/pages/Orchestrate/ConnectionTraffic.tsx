@@ -84,12 +84,12 @@ export function ConnectionTraffic() {
         </div>
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto overflow-x-hidden p-0">
-        <Table>
+        <Table className="table-fixed w-full">
           <TableHeader className="sticky top-0 bg-background/95 backdrop-blur z-10 shadow-sm">
             <TableRow>
-              <TableHead className="w-[200px]">IP</TableHead>
-              <TableHead className="text-center w-[120px]">上传</TableHead>
-              <TableHead className="text-center w-[120px]">下载</TableHead>
+              <TableHead className="w-[50%]">IP</TableHead>
+              <TableHead className="w-[25%] text-right pr-6">上传</TableHead>
+              <TableHead className="w-[25%] text-right pr-6">下载</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -107,20 +107,20 @@ export function ConnectionTraffic() {
                     {ipInfo[conn.ip]?.org && <span className="text-muted-foreground text-[10px] leading-tight">({ipInfo[conn.ip].org})</span>}
                   </div>
                 </TableCell>
-                <TableCell className="p-0 align-middle">
-                  <div className="flex items-center justify-center w-full h-full py-4">
-                    <div className="flex items-center w-[85px] text-orange-500 font-mono text-xs">
-                      <ArrowUp className="mr-1 h-3 w-3 shrink-0" />
-                      <span>{formatBytes(Number(conn.uploadTotal))}</span>
-                    </div>
+                <TableCell className="w-[25%] p-0 pr-6 align-middle">
+                  <div className="flex items-center justify-end w-full h-full py-4">
+                    <ArrowUp className="mr-1 h-3 w-3 shrink-0 text-orange-500" />
+                    <span className="w-[64px] text-right font-mono text-xs tabular-nums text-orange-500">
+                      {formatBytes(Number(conn.uploadTotal))}
+                    </span>
                   </div>
                 </TableCell>
-                <TableCell className="p-0 align-middle">
-                  <div className="flex items-center justify-center w-full h-full py-4">
-                    <div className="flex items-center w-[85px] text-cyan-500 font-mono text-xs">
-                      <ArrowDown className="mr-1 h-3 w-3 shrink-0" />
-                      <span>{formatBytes(Number(conn.downloadTotal))}</span>
-                    </div>
+                <TableCell className="w-[25%] p-0 pr-6 align-middle">
+                  <div className="flex items-center justify-end w-full h-full py-4">
+                    <ArrowDown className="mr-1 h-3 w-3 shrink-0 text-cyan-500" />
+                    <span className="w-[64px] text-right font-mono text-xs tabular-nums text-cyan-500">
+                      {formatBytes(Number(conn.downloadTotal))}
+                    </span>
                   </div>
                 </TableCell>
               </TableRow>
