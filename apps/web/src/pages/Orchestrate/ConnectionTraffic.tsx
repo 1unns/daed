@@ -88,8 +88,8 @@ export function ConnectionTraffic() {
           <TableHeader className="sticky top-0 bg-background/95 backdrop-blur z-10 shadow-sm">
             <TableRow>
               <TableHead className="w-[200px]">IP</TableHead>
-              <TableHead className="text-right w-[100px]">上传</TableHead>
-              <TableHead className="text-right w-[100px]">下载</TableHead>
+              <TableHead className="text-center w-[120px]">上传</TableHead>
+              <TableHead className="text-center w-[120px]">下载</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -107,16 +107,20 @@ export function ConnectionTraffic() {
                     {ipInfo[conn.ip]?.org && <span className="text-muted-foreground text-[10px] leading-tight">({ipInfo[conn.ip].org})</span>}
                   </div>
                 </TableCell>
-                <TableCell className="text-xs">
-                  <div className="flex items-center justify-end text-orange-500">
-                    <ArrowUp className="mr-1 h-3 w-3" />
-                    {formatBytes(Number(conn.uploadTotal))}
+                <TableCell className="p-0 align-middle">
+                  <div className="flex items-center justify-center w-full h-full py-4">
+                    <div className="flex items-center w-[85px] text-orange-500 font-mono text-xs">
+                      <ArrowUp className="mr-1 h-3 w-3 shrink-0" />
+                      <span>{formatBytes(Number(conn.uploadTotal))}</span>
+                    </div>
                   </div>
                 </TableCell>
-                <TableCell className="text-xs">
-                  <div className="flex items-center justify-end text-cyan-500">
-                    <ArrowDown className="mr-1 h-3 w-3" />
-                    {formatBytes(Number(conn.downloadTotal))}
+                <TableCell className="p-0 align-middle">
+                  <div className="flex items-center justify-center w-full h-full py-4">
+                    <div className="flex items-center w-[85px] text-cyan-500 font-mono text-xs">
+                      <ArrowDown className="mr-1 h-3 w-3 shrink-0" />
+                      <span>{formatBytes(Number(conn.downloadTotal))}</span>
+                    </div>
                   </div>
                 </TableCell>
               </TableRow>

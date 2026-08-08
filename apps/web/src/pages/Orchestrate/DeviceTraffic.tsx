@@ -73,8 +73,8 @@ export function DeviceTraffic() {
           <TableHeader className="sticky top-0 bg-background/95 backdrop-blur z-10 shadow-sm">
             <TableRow>
               <TableHead className="w-[150px]">IP</TableHead>
-              <TableHead className="text-right w-[100px]">上传</TableHead>
-              <TableHead className="text-right w-[100px]">下载</TableHead>
+              <TableHead className="text-center w-[120px]">上传</TableHead>
+              <TableHead className="text-center w-[120px]">下载</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -103,16 +103,20 @@ export function DeviceTraffic() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs">
-                      <div className="flex items-center justify-end text-orange-500">
-                        <ArrowUp className="mr-1 h-3 w-3" />
-                        {formatBytes(Number(device.proxyUploadTotal))}
+                    <TableCell className="p-0 align-middle">
+                      <div className="flex items-center justify-center w-full h-full py-4">
+                        <div className="flex items-center w-[85px] text-orange-500 font-mono text-xs">
+                          <ArrowUp className="mr-1 h-3 w-3 shrink-0" />
+                          <span>{formatBytes(Number(device.proxyUploadTotal))}</span>
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs">
-                      <div className="flex items-center justify-end text-cyan-500">
-                        <ArrowDown className="mr-1 h-3 w-3" />
-                        {formatBytes(Number(device.proxyDownloadTotal))}
+                    <TableCell className="p-0 align-middle">
+                      <div className="flex items-center justify-center w-full h-full py-4">
+                        <div className="flex items-center w-[85px] text-cyan-500 font-mono text-xs">
+                          <ArrowDown className="mr-1 h-3 w-3 shrink-0" />
+                          <span>{formatBytes(Number(device.proxyDownloadTotal))}</span>
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -125,7 +129,7 @@ export function DeviceTraffic() {
                               <div className="text-muted-foreground font-medium mb-2 border-b border-border/50 pb-1 pl-12 pr-4">
                                 正在活动的连接 ({activeConnections.length})
                               </div>
-                              <div className="max-h-[200px] overflow-y-auto custom-scrollbar">
+                              <div>
                                 <Table>
                                   <TableBody>
                                     {activeConnections
@@ -149,16 +153,20 @@ export function DeviceTraffic() {
                                                 {ipInfo[conn.ip]?.org && <span className="text-muted-foreground text-[10px] truncate ml-1" title={ipInfo[conn.ip].org}>({ipInfo[conn.ip].org})</span>}
                                               </div>
                                             </TableCell>
-                                            <TableCell className="w-[100px] text-right p-0 py-1.5 px-4 align-middle">
-                                              <div className="flex items-center justify-end text-orange-500/80 font-mono text-xs">
-                                                <ArrowUp className="mr-1 h-[10px] w-[10px]" />
-                                                {formatBytes(Number(conn.uploadTotal))}
+                                            <TableCell className="w-[120px] p-0 py-1.5 align-middle">
+                                              <div className="flex items-center justify-center w-full h-full">
+                                                <div className="flex items-center w-[85px] text-orange-500/80 font-mono text-xs">
+                                                  <ArrowUp className="mr-1 h-[10px] w-[10px] shrink-0" />
+                                                  <span>{formatBytes(Number(conn.uploadTotal))}</span>
+                                                </div>
                                               </div>
                                             </TableCell>
-                                            <TableCell className="w-[100px] text-right p-0 py-1.5 px-4 align-middle">
-                                              <div className="flex items-center justify-end text-cyan-500/80 font-mono text-xs">
-                                                <ArrowDown className="mr-1 h-[10px] w-[10px]" />
-                                                {formatBytes(Number(conn.downloadTotal))}
+                                            <TableCell className="w-[120px] p-0 py-1.5 align-middle">
+                                              <div className="flex items-center justify-center w-full h-full">
+                                                <div className="flex items-center w-[85px] text-cyan-500/80 font-mono text-xs">
+                                                  <ArrowDown className="mr-1 h-[10px] w-[10px] shrink-0" />
+                                                  <span>{formatBytes(Number(conn.downloadTotal))}</span>
+                                                </div>
                                               </div>
                                             </TableCell>
                                           </TableRow>
