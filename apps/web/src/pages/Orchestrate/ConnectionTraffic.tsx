@@ -2,8 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
-import { useConnectionTrafficQuery } from '~/apis'
-import { ArrowDown, ArrowUp, Activity } from 'lucide-react'
+import { Button } from '~/components/ui/button'
+import { useConnectionTrafficQuery, useClearTrafficStatsMutation } from '~/apis'
+import { ArrowDown, ArrowUp, Activity, Trash2 } from 'lucide-react'
 
 function formatBytes(value: number) {
   if (value < 1024) return `${value.toFixed(0)} B`
@@ -15,6 +16,7 @@ function formatBytes(value: number) {
 export function ConnectionTraffic() {
   const { t } = useTranslation()
   const { data: connections } = useConnectionTrafficQuery()
+  const clearMutation = useClearTrafficStatsMutation()
 
   const aggregatedConnections = useMemo(() => {
     if (!connections) return []
@@ -45,9 +47,21 @@ export function ConnectionTraffic() {
           <Activity className="w-5 h-5" />
           流量记录
         </CardTitle>
-        <span className="text-xs text-muted-foreground">
-          {aggregatedConnections.length} 个目标 IP（累计，点清除重置）
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">
+            {aggregatedConnections.length} 个目标 IP
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-red-500"
+            onClick={() => clearMutation.mutate()}
+            disabled={clearMutation.isPending}
+            title="清理流量数据"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto overflow-x-hidden p-0">
         <Table>
