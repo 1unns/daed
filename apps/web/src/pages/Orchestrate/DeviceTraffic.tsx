@@ -134,7 +134,7 @@ export function DeviceTraffic() {
                         <div className="py-3 text-xs">
                           {activeConnections.length > 0 ? (
                             <div className="space-y-1">
-                              <div className="text-muted-foreground font-medium mb-2 border-b border-border/50 pb-1 pl-12 pr-4">
+                              <div className="text-muted-foreground font-medium mb-2 border-b border-border/50 pb-1 pl-[38px] pr-4">
                                 正在活动的连接 ({activeConnections.length})
                               </div>
                               <div>
@@ -148,7 +148,7 @@ export function DeviceTraffic() {
                                         const dstPort = conn.id.split('-')[1]?.split(':')[1] || ''
                                         return (
                                           <TableRow key={conn.id} className="border-b border-border/30 last:border-0 hover:bg-muted/40 transition-colors">
-                                            <TableCell className="w-[50%] p-0 py-1.5 align-middle pl-12 pr-4">
+                                            <TableCell className="w-[50%] p-0 py-1.5 align-middle pl-[38px] pr-4">
                                               <div 
                                                 className="font-mono text-muted-foreground flex items-center cursor-pointer hover:text-primary transition-colors min-w-0" 
                                                 title={`点击查询归属地\n${conn.ip}:${dstPort}`}
