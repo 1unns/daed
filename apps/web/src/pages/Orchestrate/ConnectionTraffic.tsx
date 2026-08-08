@@ -32,7 +32,10 @@ export function ConnectionTraffic() {
         })
       }
     }
-    return Array.from(map.values())
+    // Sort by total traffic descending so busiest targets appear first
+    return Array.from(map.values()).sort(
+      (a, b) => (b.uploadTotal + b.downloadTotal) - (a.uploadTotal + a.downloadTotal)
+    )
   }, [connections])
 
   return (
@@ -40,8 +43,11 @@ export function ConnectionTraffic() {
       <CardHeader className="flex flex-row items-center justify-between py-4 pb-2">
         <CardTitle className="flex items-center gap-2 text-lg text-primary">
           <Activity className="w-5 h-5" />
-          活动连接
+          流量记录
         </CardTitle>
+        <span className="text-xs text-muted-foreground">
+          {aggregatedConnections.length} 个目标 IP（累计，点清除重置）
+        </span>
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto overflow-x-hidden p-0">
         <Table>
