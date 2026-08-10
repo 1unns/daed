@@ -55,7 +55,7 @@ export function DeviceTraffic() {
       <CardHeader className="flex flex-row items-center justify-between py-4 pb-2">
         <CardTitle className="flex items-center gap-2 text-lg text-primary">
           <MonitorSmartphone className="w-5 h-5" />
-          设备流量
+          {t('orchestrateTraffic.deviceTraffic')}
         </CardTitle>
         <Button
           variant="ghost"
@@ -63,7 +63,7 @@ export function DeviceTraffic() {
           className="h-8 w-8 text-muted-foreground hover:text-red-500"
           onClick={() => clearMutation.mutate()}
           disabled={clearMutation.isPending}
-          title="清理流量数据"
+          title={t('orchestrateTraffic.clearTrafficData')}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -75,12 +75,12 @@ export function DeviceTraffic() {
               <TableHead className="w-[50%]">IP</TableHead>
               <TableHead className="w-[25%] p-0 pr-6">
                 <div className="flex items-center justify-end w-full h-full">
-                  <div className="w-[80px] text-center">上传</div>
+                  <div className="w-[80px] text-center">{t('orchestrateTraffic.upload')}</div>
                 </div>
               </TableHead>
               <TableHead className="w-[25%] p-0 pr-6">
                 <div className="flex items-center justify-end w-full h-full">
-                  <div className="w-[80px] text-center">下载</div>
+                  <div className="w-[80px] text-center">{t('orchestrateTraffic.download')}</div>
                 </div>
               </TableHead>
             </TableRow>
@@ -96,7 +96,7 @@ export function DeviceTraffic() {
                   <TableRow 
                     className="cursor-pointer hover:bg-muted/50 transition-colors group"
                     onClick={() => toggleExpand(device.ip)}
-                    title="点击查看该设备当前活动的网络连接"
+                    title={t('orchestrateTraffic.viewActiveConnections')}
                   >
                     <TableCell className="font-mono text-xs">
                       <div className="flex items-center gap-1.5">
@@ -135,7 +135,7 @@ export function DeviceTraffic() {
                           {activeConnections.length > 0 ? (
                             <div className="space-y-1">
                               <div className="text-muted-foreground font-medium mb-2 border-b border-border/50 pb-1 pl-[38px] pr-4">
-                                正在活动的连接 ({activeConnections.length})
+                                {t('orchestrateTraffic.activeConnections', { count: activeConnections.length })}
                               </div>
                               <div>
                                 <Table className="table-fixed w-full">
@@ -151,13 +151,13 @@ export function DeviceTraffic() {
                                             <TableCell className="w-[50%] p-0 py-1.5 align-middle pl-[38px] pr-4">
                                               <div 
                                                 className="font-mono text-muted-foreground flex items-center cursor-pointer hover:text-primary transition-colors min-w-0" 
-                                                title={`点击查询归属地\n${conn.ip}:${dstPort}`}
+                                                title={`${t('orchestrateTraffic.queryIPInfo')}\n${conn.ip}:${dstPort}`}
                                                 onClick={(e) => handleIpClick(e, conn.ip)}
                                               >
                                                 <span className="text-foreground/80 shrink-0">{conn.ip}</span>
                                                 <span className="text-foreground/50 shrink-0">:{dstPort}</span>
-                                                {ipInfo[conn.ip]?.loading && <span className="text-muted-foreground text-[10px] whitespace-nowrap ml-1 shrink-0">查询中...</span>}
-                                                {ipInfo[conn.ip]?.error && <span className="text-red-400 text-[10px] whitespace-nowrap ml-1 shrink-0">查询失败</span>}
+                                                {ipInfo[conn.ip]?.loading && <span className="text-muted-foreground text-[10px] whitespace-nowrap ml-1 shrink-0">{t('orchestrateTraffic.querying')}</span>}
+                                                {ipInfo[conn.ip]?.error && <span className="text-red-400 text-[10px] whitespace-nowrap ml-1 shrink-0">{t('orchestrateTraffic.queryFailed')}</span>}
                                                 {ipInfo[conn.ip]?.org && <span className="text-muted-foreground text-[10px] truncate ml-1" title={ipInfo[conn.ip].org}>({ipInfo[conn.ip].org})</span>}
                                               </div>
                                             </TableCell>
@@ -187,7 +187,7 @@ export function DeviceTraffic() {
                           ) : (
                             <div className="text-center text-muted-foreground py-2 flex items-center justify-center gap-2">
                               <MonitorSmartphone className="h-4 w-4 opacity-50" />
-                              此设备目前没有活动的连接
+                              {t('orchestrateTraffic.noActiveConnections')}
                             </div>
                           )}
                         </div>
@@ -200,7 +200,7 @@ export function DeviceTraffic() {
             {!devices?.length && (
               <TableRow>
                 <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
-                  暂无设备数据
+                  {t('orchestrateTraffic.noDeviceTraffic')}
                 </TableCell>
               </TableRow>
             )}
