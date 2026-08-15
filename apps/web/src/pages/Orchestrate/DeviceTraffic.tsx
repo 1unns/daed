@@ -113,17 +113,17 @@ export function DeviceTraffic() {
                     </TableCell>
                     <TableCell className="w-[25%] p-0 pr-6 align-middle">
                       <div className="flex items-center justify-end w-full h-full py-4">
-                        <div className="flex items-center justify-center w-[80px] gap-1 text-orange-500 font-mono text-xs tabular-nums">
+                        <div className="flex items-center justify-center w-[80px] gap-1 text-orange-500 font-mono text-xs tabular-nums" title={`Proxy: ${formatBytes(Number(device.proxyUploadTotal))} | Direct: ${formatBytes(Number(device.directUploadTotal))}`}>
                           <ArrowUp className="h-3 w-3 shrink-0" />
-                          <span>{formatBytes(Number(device.proxyUploadTotal))}</span>
+                          <span>{formatBytes(Number(device.proxyUploadTotal) + Number(device.directUploadTotal))}</span>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell className="w-[25%] p-0 pr-6 align-middle">
                       <div className="flex items-center justify-end w-full h-full py-4">
-                        <div className="flex items-center justify-center w-[80px] gap-1 text-cyan-500 font-mono text-xs tabular-nums">
+                        <div className="flex items-center justify-center w-[80px] gap-1 text-cyan-500 font-mono text-xs tabular-nums" title={`Proxy: ${formatBytes(Number(device.proxyDownloadTotal))} | Direct: ${formatBytes(Number(device.directDownloadTotal))}`}>
                           <ArrowDown className="h-3 w-3 shrink-0" />
-                          <span>{formatBytes(Number(device.proxyDownloadTotal))}</span>
+                          <span>{formatBytes(Number(device.proxyDownloadTotal) + Number(device.directDownloadTotal))}</span>
                         </div>
                       </div>
                     </TableCell>
