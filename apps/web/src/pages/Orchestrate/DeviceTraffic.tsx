@@ -107,23 +107,36 @@ export function DeviceTraffic() {
                         )}
                         <div className="flex flex-col">
                           <span>{device.ip}</span>
-                          {device.name && <span className="text-muted-foreground text-[10px]">{device.name}</span>}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell className="w-[25%] p-0 pr-6 align-middle">
-                      <div className="flex items-center justify-end w-full h-full py-4">
-                        <div className="flex items-center justify-center w-[80px] gap-1 text-orange-500 font-mono text-xs tabular-nums">
-                          <ArrowUp className="h-3 w-3 shrink-0" />
-                          <span>{formatBytes(Number(device.proxyUploadTotal))}</span>
+                      <div className="flex items-center justify-end w-full h-full py-2">
+                        <div className="flex flex-col items-end w-[90px] gap-0.5">
+                          <div className="flex items-center justify-end gap-1 text-orange-500 font-mono text-xs tabular-nums" title={`${t('orchestrateTraffic.proxy')}: ${formatBytes(Number(device.proxyUploadTotal))}`}>
+                            <ArrowUp className="h-3 w-3 shrink-0" />
+                            <span>{formatBytes(Number(device.proxyUploadTotal))}</span>
+                            <span className="text-[10px] text-muted-foreground/80">{t('orchestrateTraffic.proxy')}</span>
+                          </div>
+                          <div className="flex items-center justify-end gap-1 text-muted-foreground font-mono text-[10px] tabular-nums" title={`${t('orchestrateTraffic.direct')}: ${formatBytes(Number(device.directUploadTotal))}`}>
+                            <span>{formatBytes(Number(device.directUploadTotal))}</span>
+                            <span className="text-[10px] text-muted-foreground/60">{t('orchestrateTraffic.direct')}</span>
+                          </div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell className="w-[25%] p-0 pr-6 align-middle">
-                      <div className="flex items-center justify-end w-full h-full py-4">
-                        <div className="flex items-center justify-center w-[80px] gap-1 text-cyan-500 font-mono text-xs tabular-nums">
-                          <ArrowDown className="h-3 w-3 shrink-0" />
-                          <span>{formatBytes(Number(device.proxyDownloadTotal))}</span>
+                      <div className="flex items-center justify-end w-full h-full py-2">
+                        <div className="flex flex-col items-end w-[90px] gap-0.5">
+                          <div className="flex items-center justify-end gap-1 text-cyan-500 font-mono text-xs tabular-nums" title={`${t('orchestrateTraffic.proxy')}: ${formatBytes(Number(device.proxyDownloadTotal))}`}>
+                            <ArrowDown className="h-3 w-3 shrink-0" />
+                            <span>{formatBytes(Number(device.proxyDownloadTotal))}</span>
+                            <span className="text-[10px] text-muted-foreground/80">{t('orchestrateTraffic.proxy')}</span>
+                          </div>
+                          <div className="flex items-center justify-end gap-1 text-muted-foreground font-mono text-[10px] tabular-nums" title={`${t('orchestrateTraffic.direct')}: ${formatBytes(Number(device.directDownloadTotal))}`}>
+                            <span>{formatBytes(Number(device.directDownloadTotal))}</span>
+                            <span className="text-[10px] text-muted-foreground/60">{t('orchestrateTraffic.direct')}</span>
+                          </div>
                         </div>
                       </div>
                     </TableCell>
@@ -144,8 +157,7 @@ export function DeviceTraffic() {
                                       // Sort active connections by traffic size descending
                                       .sort((a, b) => (Number(b.uploadTotal) + Number(b.downloadTotal)) - (Number(a.uploadTotal) + Number(a.downloadTotal)))
                                       .map(conn => {
-                                        // id format: "srcIp:srcPort-dstIp:dstPort"
-                                        const dstPort = conn.id.split('-')[1]?.split(':')[1] || ''
+                                        const dstPort = conn.dstPort || conn.id.split('-')[1]?.split(':')[1] || ''
                                         return (
                                           <TableRow key={conn.id} className="border-b border-border/30 last:border-0 hover:bg-muted/40 transition-colors">
                                             <TableCell className="w-[50%] p-0 py-1.5 align-middle pl-[38px] pr-4">
@@ -179,7 +191,7 @@ export function DeviceTraffic() {
                                             </TableCell>
                                           </TableRow>
                                         )
-                                    })}
+                                      })}
                                   </TableBody>
                                 </Table>
                               </div>

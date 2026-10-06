@@ -40,17 +40,33 @@ export function ConnectionTraffic() {
 
   const aggregatedConnections = useMemo(() => {
     if (!connections) return []
-    const map = new Map<string, { ip: string; uploadTotal: number; downloadTotal: number }>()
+    const map = new Map<string, { 
+      ip: string; 
+      uploadTotal: number; 
+      downloadTotal: number;
+      proxyUploadTotal: number;
+      proxyDownloadTotal: number;
+      directUploadTotal: number;
+      directDownloadTotal: number;
+    }>()
     for (const conn of connections) {
       const existing = map.get(conn.ip)
       if (existing) {
         existing.uploadTotal += Number(conn.uploadTotal)
         existing.downloadTotal += Number(conn.downloadTotal)
+        existing.proxyUploadTotal += Number(conn.proxyUploadTotal || 0)
+        existing.proxyDownloadTotal += Number(conn.proxyDownloadTotal || 0)
+        existing.directUploadTotal += Number(conn.directUploadTotal || 0)
+        existing.directDownloadTotal += Number(conn.directDownloadTotal || 0)
       } else {
         map.set(conn.ip, {
           ip: conn.ip,
           uploadTotal: Number(conn.uploadTotal),
           downloadTotal: Number(conn.downloadTotal),
+          proxyUploadTotal: Number(conn.proxyUploadTotal || 0),
+          proxyDownloadTotal: Number(conn.proxyDownloadTotal || 0),
+          directUploadTotal: Number(conn.directUploadTotal || 0),
+          directDownloadTotal: Number(conn.directDownloadTotal || 0),
         })
       }
     }
@@ -116,18 +132,32 @@ export function ConnectionTraffic() {
                   </div>
                 </TableCell>
                 <TableCell className="w-[25%] p-0 pr-6 align-middle">
-                  <div className="flex items-center justify-end w-full h-full py-4">
-                    <div className="flex items-center justify-center w-[80px] gap-1 text-orange-500 font-mono text-xs tabular-nums">
-                      <ArrowUp className="h-3 w-3 shrink-0" />
-                      <span>{formatBytes(Number(conn.uploadTotal))}</span>
+                  <div className="flex items-center justify-end w-full h-full py-2">
+                    <div className="flex flex-col items-end w-[90px] gap-0.5">
+                      <div className="flex items-center justify-end gap-1 text-orange-500 font-mono text-xs tabular-nums" title={`${t('orchestrateTraffic.proxy')}: ${formatBytes(conn.proxyUploadTotal)}`}>
+                        <ArrowUp className="h-3 w-3 shrink-0" />
+                        <span>{formatBytes(conn.proxyUploadTotal)}</span>
+                        <span className="text-[10px] text-muted-foreground/80">{t('orchestrateTraffic.proxy')}</span>
+                      </div>
+                      <div className="flex items-center justify-end gap-1 text-muted-foreground font-mono text-[10px] tabular-nums" title={`${t('orchestrateTraffic.direct')}: ${formatBytes(conn.directUploadTotal)}`}>
+                        <span>{formatBytes(conn.directUploadTotal)}</span>
+                        <span className="text-[10px] text-muted-foreground/60">{t('orchestrateTraffic.direct')}</span>
+                      </div>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell className="w-[25%] p-0 pr-6 align-middle">
-                  <div className="flex items-center justify-end w-full h-full py-4">
-                    <div className="flex items-center justify-center w-[80px] gap-1 text-cyan-500 font-mono text-xs tabular-nums">
-                      <ArrowDown className="h-3 w-3 shrink-0" />
-                      <span>{formatBytes(Number(conn.downloadTotal))}</span>
+                  <div className="flex items-center justify-end w-full h-full py-2">
+                    <div className="flex flex-col items-end w-[90px] gap-0.5">
+                      <div className="flex items-center justify-end gap-1 text-cyan-500 font-mono text-xs tabular-nums" title={`${t('orchestrateTraffic.proxy')}: ${formatBytes(conn.proxyDownloadTotal)}`}>
+                        <ArrowDown className="h-3 w-3 shrink-0" />
+                        <span>{formatBytes(conn.proxyDownloadTotal)}</span>
+                        <span className="text-[10px] text-muted-foreground/80">{t('orchestrateTraffic.proxy')}</span>
+                      </div>
+                      <div className="flex items-center justify-end gap-1 text-muted-foreground font-mono text-[10px] tabular-nums" title={`${t('orchestrateTraffic.direct')}: ${formatBytes(conn.directDownloadTotal)}`}>
+                        <span>{formatBytes(conn.directDownloadTotal)}</span>
+                        <span className="text-[10px] text-muted-foreground/60">{t('orchestrateTraffic.direct')}</span>
+                      </div>
                     </div>
                   </div>
                 </TableCell>

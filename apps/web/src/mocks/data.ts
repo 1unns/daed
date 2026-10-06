@@ -610,8 +610,6 @@ export const mockDeviceTraffic = {
   deviceTraffic: [
     {
       ip: '192.168.1.100',
-      mac: 'AA:BB:CC:DD:EE:01',
-      name: 'Desktop-PC',
       proxyUploadTotal: '15243100',
       proxyDownloadTotal: '254192000',
       directUploadTotal: '450200',
@@ -619,8 +617,6 @@ export const mockDeviceTraffic = {
     },
     {
       ip: '192.168.1.101',
-      mac: 'AA:BB:CC:DD:EE:02',
-      name: 'iPhone',
       proxyUploadTotal: '500210',
       proxyDownloadTotal: '14231020',
       directUploadTotal: '85002100',
@@ -628,8 +624,6 @@ export const mockDeviceTraffic = {
     },
     {
       ip: '192.168.1.105',
-      mac: 'AA:BB:CC:DD:EE:05',
-      name: 'Smart-TV',
       proxyUploadTotal: '1024',
       proxyDownloadTotal: '50012',
       directUploadTotal: '5421000',
@@ -643,35 +637,51 @@ export const mockConnectionTraffic = {
   connectionTraffic: [
     {
       id: 'conn-1',
-      domain: 'google.com',
       ip: '142.251.42.238',
+      srcPort: 54321,
+      dstPort: 443,
+      proxyUploadTotal: '10240',
+      proxyDownloadTotal: '512000',
+      directUploadTotal: '0',
+      directDownloadTotal: '0',
       uploadTotal: '10240',
-      downloadTotal: '512000',
-      state: 'ESTABLISHED'
+      downloadTotal: '512000'
     },
     {
       id: 'conn-2',
-      domain: 'youtube.com',
       ip: '142.251.42.239',
+      srcPort: 54322,
+      dstPort: 443,
+      proxyUploadTotal: '524288',
+      proxyDownloadTotal: '15485760',
+      directUploadTotal: '0',
+      directDownloadTotal: '0',
       uploadTotal: '524288',
-      downloadTotal: '15485760',
-      state: 'ESTABLISHED'
+      downloadTotal: '15485760'
     },
     {
       id: 'conn-3',
-      domain: 'github.com',
       ip: '140.82.113.3',
+      srcPort: 54323,
+      dstPort: 443,
+      proxyUploadTotal: '0',
+      proxyDownloadTotal: '0',
+      directUploadTotal: '12400',
+      directDownloadTotal: '84000',
       uploadTotal: '12400',
-      downloadTotal: '84000',
-      state: 'TIME_WAIT'
+      downloadTotal: '84000'
     },
     {
       id: 'conn-4',
-      domain: 'api.openai.com',
       ip: '104.18.2.161',
+      srcPort: 54324,
+      dstPort: 443,
+      proxyUploadTotal: '45000',
+      proxyDownloadTotal: '990000',
+      directUploadTotal: '0',
+      directDownloadTotal: '0',
       uploadTotal: '45000',
-      downloadTotal: '990000',
-      state: 'ESTABLISHED'
+      downloadTotal: '990000'
     }
   ]
 }

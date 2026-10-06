@@ -212,8 +212,6 @@ export function useTrafficOverviewQuery(windowSec: number, maxPoints: number) {
 
 export interface DeviceTrafficData {
   ip: string
-  mac?: string
-  name?: string
   proxyUploadTotal: string
   proxyDownloadTotal: string
   directUploadTotal: string
@@ -222,11 +220,15 @@ export interface DeviceTrafficData {
 
 export interface ConnectionTrafficData {
   id: string
-  domain: string
   ip: string
+  srcPort: number
+  dstPort: number
+  proxyUploadTotal: string
+  proxyDownloadTotal: string
+  directUploadTotal: string
+  directDownloadTotal: string
   uploadTotal: string
   downloadTotal: string
-  state: string
 }
 
 export function useDeviceTrafficQuery() {
@@ -240,8 +242,6 @@ export function useDeviceTrafficQuery() {
           query DeviceTraffic {
             deviceTraffic {
               ip
-              mac
-              name
               proxyUploadTotal
               proxyDownloadTotal
               directUploadTotal
@@ -269,11 +269,15 @@ export function useConnectionTrafficQuery() {
           query ConnectionTraffic {
             connectionTraffic {
               id
-              domain
               ip
+              srcPort
+              dstPort
+              proxyUploadTotal
+              proxyDownloadTotal
+              directUploadTotal
+              directDownloadTotal
               uploadTotal
               downloadTotal
-              state
             }
           }
         `

@@ -300,7 +300,9 @@
     "viewActiveConnections": "View Device Active Connections",
     "activeConnections": "Active Connections ({{count}})",
     "noActiveConnections": "No active connections for this device currently",
-    "noDeviceTraffic": "No Device Traffic"
+    "noDeviceTraffic": "No Device Traffic",
+    "proxy": "Proxy",
+    "direct": "Direct"
   },
   "password": "Password",
   "password.change": "Change Password",
