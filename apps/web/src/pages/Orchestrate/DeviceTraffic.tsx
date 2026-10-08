@@ -89,7 +89,7 @@ export function DeviceTraffic() {
             {devices?.map((device) => {
               const isExpanded = expandedIps.has(device.ip)
               // Only find connections where the srcIp (first part of id before '-') matches the device IP
-              const activeConnections = connections?.filter(c => c.id.split('-')[0].split(':')[0] === device.ip) || []
+              const activeConnections = connections?.filter(c => c.id.split('-')[0].replace(/:\d+$/, '') === device.ip) || []
 
               return (
                 <React.Fragment key={device.ip}>
