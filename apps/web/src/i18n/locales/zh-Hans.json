@@ -258,7 +258,7 @@
   "node": "节点",
   "node connectivity check": "节点连通性检测",
   "trafficOverview": {
-    "title": "流量统计",
+    "title": "代理流量",
     "description": "实时滚动展示上下行流量，并支持切换时间窗口。",
     "uploadChart": "上行流量",
     "downloadChart": "下行流量",

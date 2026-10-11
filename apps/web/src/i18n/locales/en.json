@@ -258,7 +258,7 @@
   "node": "Node",
   "node connectivity check": "Node Connectivity Check",
   "trafficOverview": {
-    "title": "Traffic Statistics",
+    "title": "Proxy Traffic",
     "description": "Rolling uplink and downlink overview with a switchable time window.",
     "uploadChart": "Uplink Traffic",
     "downloadChart": "Downlink Traffic",
