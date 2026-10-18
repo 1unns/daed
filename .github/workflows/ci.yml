@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: Web (lint / typecheck / test / build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.24.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # lint runs without --fix on purpose: CI must report, not rewrite. The
+      # local "pnpm lint" script passes --fix for convenience.
+      - name: Lint
+        run: pnpm exec eslint .
+
+      - name: Typecheck
+        run: pnpm check-types
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+  wing:
+    name: Wing (vet / build / test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: wing/go.mod
+          cache-dependency-path: wing/go.sum
+
+      # generated_resolver.go / generated_input.go are gitignored and must be
+      # produced before the package type-checks. Only this package is generated:
+      # the bpf2go directives elsewhere need clang and llvm, which the
+      # dae_stub_ebpf tag below makes unnecessary.
+      - name: Generate GraphQL resolver and input
+        working-directory: wing
+        run: go generate ./graphql/service/config/global/
+
+      # dae_stub_ebpf replaces the bpf2go generated objects with hand-written
+      # stubs. Without it the build needs clang to compile the eBPF programs,
+      # which this job deliberately avoids; the real objects are covered by the
+      # Dockerfile build.
+      - name: Vet
+        working-directory: wing
+        run: go vet -tags dae_stub_ebpf ./...
+
+      - name: Build
+        working-directory: wing
+        run: go build -tags dae_stub_ebpf ./...
+
+      - name: Test
+        working-directory: wing
+        run: go test -tags dae_stub_ebpf ./...

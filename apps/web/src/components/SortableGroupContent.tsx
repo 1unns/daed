@@ -1,14 +1,14 @@
 import type { NodeLatencyProbeResult } from '~/apis'
 import { Droppable } from '@hello-pangea/dnd'
-import { ChevronDown, Plus } from 'lucide-react'
 import { useStore } from '@nanostores/react'
+import { ChevronDown, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
-import { formatLatencyLabel } from '~/utils/latency'
 import { groupSortOrdersAtom } from '~/store'
+import { formatLatencyLabel } from '~/utils/latency'
 
 interface GroupNode {
   id: string

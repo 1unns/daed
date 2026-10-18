@@ -8,6 +8,8 @@ import {
   isMockMode,
   MOCK_DEFAULT_IDS,
   mockConfigs,
+  mockConnectionTraffic,
+  mockDeviceTraffic,
   mockDNSs,
   mockGeneral,
   mockGroups,
@@ -16,8 +18,6 @@ import {
   mockRoutings,
   mockSubscriptions,
   mockUser,
-  mockDeviceTraffic,
-  mockConnectionTraffic,
 } from './data'
 
 // Extract operation name from GraphQL query

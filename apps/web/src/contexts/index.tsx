@@ -3,7 +3,7 @@ import type { ClientError, RequestDocument, Variables } from 'graphql-request'
 import { useStore } from '@nanostores/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GraphQLClient } from 'graphql-request'
-import { createContext, use, useMemo } from 'react'
+import { createContext, use, useEffect, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
 
 import { isMockMode, MockGraphQLClient } from '~/mocks'
@@ -57,6 +57,21 @@ export function QueryProvider({ children, colorScheme, themeMode, setThemeMode }
   const token = useStore(tokenAtom)
 
   const queryClient = useMemo(() => new QueryClient(), [])
+
+  // The cache belongs to one (endpoint, token) pair. Keeping it across a switch
+  // would keep serving the previous instance's nodes, subscriptions and traffic
+  // until each query happened to go stale — the UI would describe a different
+  // device than the one it is talking to. Clearing on logout matters for the
+  // same reason: the next screen must not be able to show the last session's
+  // data.
+  const credentialKey = `${endpointURL}\u0000${token}`
+  const lastCredentialKey = useRef(credentialKey)
+  useEffect(() => {
+    if (lastCredentialKey.current === credentialKey)
+      return
+    lastCredentialKey.current = credentialKey
+    queryClient.clear()
+  }, [credentialKey, queryClient])
 
   const gqlClient = useMemo<GQLClient>(() => {
     // Use mock client in mock mode

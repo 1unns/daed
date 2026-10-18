@@ -1,10 +1,10 @@
-import { useTranslation } from 'react-i18next'
+import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, MonitorSmartphone, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useClearTrafficStatsMutation, useConnectionTrafficQuery, useDeviceTrafficQuery } from '~/apis'
+import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
-import { useDeviceTrafficQuery, useClearTrafficStatsMutation, useConnectionTrafficQuery } from '~/apis'
-import { ArrowDown, ArrowUp, Trash2, MonitorSmartphone, ChevronDown, ChevronRight } from 'lucide-react'
-import { Button } from '~/components/ui/button'
 
 function formatBytes(value: number) {
   if (value < 1024) return `${value.toFixed(0)} B`
@@ -36,7 +36,7 @@ export function DeviceTraffic() {
           loading: false 
         } 
       }))
-    } catch (err) {
+    } catch {
       setIpInfo(prev => ({ ...prev, [ip]: { error: true, loading: false } }))
     }
   }
