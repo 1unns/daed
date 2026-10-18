@@ -18,6 +18,7 @@ dist-ssr
 # Editor directories and files
 .idea
 .DS_Store
+.workbuddy
 *.suo
 *.ntvs*
 *.njsproj
