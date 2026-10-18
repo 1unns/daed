@@ -84,7 +84,12 @@ export function QueryProvider({ children, colorScheme, themeMode, setThemeMode }
         authorization: `Bearer ${token}`,
       },
       responseMiddleware: (response) => {
-        const error = (response as ClientError).response?.errors?.[0]
+        const clientError = response as ClientError
+        if (clientError.response?.status === 401) {
+          tokenAtom.set('')
+          return
+        }
+        const error = clientError.response?.errors?.[0]
 
         if (error) {
           toast.error(error.message)
