@@ -315,7 +315,10 @@ export function useNodeLatenciesQuery(refetchIntervalMs: number) {
     },
     placeholderData: (previousData) => previousData,
     refetchInterval: safeInterval,
-    refetchIntervalInBackground: true,
+    // Deliberately not refetchIntervalInBackground: this is the heaviest query
+    // in the app (the server has to probe every node), so there is no reason to
+    // keep hitting the router while the tab is hidden. The traffic queries below
+    // behave the same way.
   })
 }
 

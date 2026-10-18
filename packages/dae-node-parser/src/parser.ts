@@ -446,7 +446,7 @@ export function parseVMessUrl(url: string): (Partial<V2rayConfig> & { protocol: 
     const mainContent = hashIndex !== -1 ? content.slice(0, hashIndex) : content
 
     // If content contains @ and doesn't look like base64, try URL format first
-    if (mainContent.includes('@') && !mainContent.match(/^[A-Z0-9+/=]+$/i)) {
+    if (mainContent.includes('@') && !/^[A-Z0-9+/=]+$/i.test(mainContent)) {
       const result = parseVMessStandardUrl(url)
 
       if (result) {
