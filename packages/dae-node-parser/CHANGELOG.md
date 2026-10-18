@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/1unns/daed/compare/dae-node-parser-v1.21.0...dae-node-parser-v1.21.1) (2026-10-18)
+
+
+### Bug Fixes
+
+* **web:** restore the traffic cache key import and gate the repo on CI ([d2f63fc](https://github.com/1unns/daed/commit/d2f63fc6b9ad16d46b2b012bfbbf867579df007d))
+
 ## [1.21.0](https://github.com/daeuniverse/daed/compare/dae-node-parser-v1.20.1...dae-node-parser-v1.21.0) (2026-03-31)
 
 

@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.29.0](https://github.com/1unns/daed/compare/v1.28.0...v1.29.0) (2026-10-18)
+
+
+### Features
+
+* add clear traffic stats button and support separated traffic stats ([147c4d5](https://github.com/1unns/daed/commit/147c4d56aaca317b8420f63f9e43c434d0a4863f))
+* i18n for traffic records ([6b24143](https://github.com/1unns/daed/commit/6b241434bd3371e106ebf4a213a498c2bb6cef03))
+* **traffic:** revert UI to proxy only and update submodules ([7a375fd](https://github.com/1unns/daed/commit/7a375fd2c257299c938c7e7a1370cde80d9779b3))
+* **ui:** add clear button to ConnectionTraffic panel to match DeviceTraffic ([f5c2d25](https://github.com/1unns/daed/commit/f5c2d25d099dc36fd44bd2e06e015df29c794768))
+* **ui:** add click-to-lookup IP location feature in traffic panel ([e87a18d](https://github.com/1unns/daed/commit/e87a18d84d6716ba77f9fd9f97b44f11b02d32b1))
+* **ui:** add expandable rows in DeviceTraffic to show active connections per device ([d06c5ce](https://github.com/1unns/daed/commit/d06c5ce5e123a60ccd629f017be7ef920527d651))
+* **ui:** center column alignment with fixed inner width for perfect vertical icon alignment ([be692f0](https://github.com/1unns/daed/commit/be692f00560b8706cc8ccdc91be66182fd58d776))
+* **ui:** perfectly align dropdown columns and connection traffic columns ([a7ce30a](https://github.com/1unns/daed/commit/a7ce30a6a15ebc1b74b8635e21fd3a73dde82ea9))
+* **ui:** right align device traffic cols and add inline ip lookup for active connections ([fb260b3](https://github.com/1unns/daed/commit/fb260b3e36635dd7ef14af30f8a1b8f10b21e3fb))
+* **ui:** unify DeviceTraffic and ConnectionTraffic to show both Proxy and Direct traffic ([63f318f](https://github.com/1unns/daed/commit/63f318fabd890f3c1aa7f52de14d9b34b6492040))
+* **web:** update traffic overview title to Proxy Traffic and bump wing ([2182aee](https://github.com/1unns/daed/commit/2182aee54f504d59f469e0c96f616ea40802260a))
+
+
+### Bug Fixes
+
+* **auth:** clear tokenAtom on HTTP 401 in responseMiddleware and bump wing ([402f676](https://github.com/1unns/daed/commit/402f676cb95b37f4ddf8774cf83cf73f83c02744))
+* **ui:** align inner active connection IP with outer device IP by matching padding offset ([646f243](https://github.com/1unns/daed/commit/646f24387aa272efc8e45bfb7f89a8bb242496ba))
+* **ui:** display total traffic instead of only proxy traffic in device list ([7788a31](https://github.com/1unns/daed/commit/7788a311c166858689b61f42f78ff8bab6e213b4))
+* **ui:** nest centered 80px container within right-aligned wrapper to keep header and cell content perfectly center-aligned relative to each other without huge gaps ([b4027a0](https://github.com/1unns/daed/commit/b4027a04137b918fdfc0dad29c1f3f7e9cf11f4c))
+* **ui:** update connection traffic panel title and sort by total traffic ([1e53409](https://github.com/1unns/daed/commit/1e5340963787c562df98c9e6cc32fde93c8430f4))
+* **ui:** use table-fixed and percentage widths for absolutely perfect cross-table alignment, align numbers strictly to the right within 64px container ([578a6f0](https://github.com/1unns/daed/commit/578a6f096d81daebba3bbbf2994af69079e28f34))
+* **web:** remove flex-1 h-full to fix incorrect scrollbar on traffic cards ([701edf6](https://github.com/1unns/daed/commit/701edf6841379d4c5ce89cbe2f9ce1f1bf2a1014))
+* **web:** remove leftover column from DeviceTraffic and group connections by IP in ConnectionTraffic ([8e23103](https://github.com/1unns/daed/commit/8e23103b2b8647d7aabb62b6cb37d6173494f372))
+* **web:** restore the traffic cache key import and gate the repo on CI ([d2f63fc](https://github.com/1unns/daed/commit/d2f63fc6b9ad16d46b2b012bfbbf867579df007d))
+* **web:** support IPv6 in device active connections filter and bump wing ([60a7726](https://github.com/1unns/daed/commit/60a7726712db8b75333e4ff722924cf81bec0bf8))
+
 ## [1.28.0](https://github.com/daeuniverse/daed/compare/v1.27.0...v1.28.0) (2026-04-18)
 
 
