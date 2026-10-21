@@ -1,0 +1,85 @@
+name: Bug report
+description: Report a defect in daed
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not report security vulnerabilities here.** See [SECURITY.md](../blob/main/SECURITY.md) for the private channel. A public issue describing an exploitable flaw is a disclosure, not a report.
+
+        **Which build are you running?** This repository (`1unns/daed`) is a development fork. Official releases come from [daeuniverse/daed](https://github.com/daeuniverse/daed) — if you installed from there, report it [upstream](https://github.com/daeuniverse/daed/issues) instead.
+
+  - type: dropdown
+    id: build-source
+    attributes:
+      label: Build source
+      description: Where did the binary or image come from?
+      options:
+        - Official release from daeuniverse/daed
+        - Built from this fork (1unns/daed)
+        - Docker image from a registry
+        - Distribution package (AUR / Copr / deb / rpm)
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `daed --version`, or the image tag.
+      placeholder: v1.28.0
+    validations:
+      required: true
+
+  - type: input
+    id: host
+    attributes:
+      label: Host environment
+      description: OS, kernel version, architecture, and how the panel is deployed (systemd, Docker, bare binary).
+      placeholder: Debian 12, kernel 6.1.0, amd64, systemd
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: The observed behaviour, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The shortest sequence that triggers the problem.
+      placeholder: |
+        1. Open Orchestrate -> Node
+        2. Import a subscription with ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: |
+        Paste the output of `journalctl -u daed` or `docker logs daed`. **Redact** subscription URLs, node passwords, tokens and public IPs before pasting.
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues and this is not a duplicate.
+          required: true
+        - label: I removed credentials, subscription links and personal data from anything I pasted.
+          required: true
+        - label: This is not a security vulnerability (those go through SECURITY.md).
+          required: true

@@ -1,5 +1,13 @@
 # Contributing to daed
 
+> ⚠️ **This repository (`1unns/daed`) is a development fork, not an official distribution channel.**
+>
+> Official releases are produced by [**daeuniverse/daed**](https://github.com/daeuniverse/daed). The `wing` and `dae-core` submodules here point at `1unns/*` forks rather than the upstream repositories, so code in this tree may differ from what upstream ships.
+>
+> - A change that belongs in the product should generally go upstream first. Open it against [daeuniverse/daed](https://github.com/daeuniverse/daed) unless it is specific to this fork's submodule pins.
+> - Bug reports about **official releases** belong in [daeuniverse/daed/issues](https://github.com/daeuniverse/daed/issues). Reports specific to this fork belong here.
+> - Security issues must **not** be filed as public issues. See [`SECURITY.md`](./SECURITY.md).
+
 First off, thanks for taking the time to contribute! ❤️
 
 All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them.
@@ -13,6 +21,13 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 - [Pull Request Process](#pull-request-process)
 - [Commit Guidelines](#commit-guidelines)
 - [Style Guide](#style-guide)
+
+Operational procedures (deployment, backup, upgrade, rollback, incident
+response) live in the [Runbook](./docs/RUNBOOK.md). Changes that affect an
+operating instance — a new flag, a changed default, a required volume, a
+migration that cannot be reversed — should update that document in the same pull
+request, because the runbook is what someone reads when the maintainer is not
+available.
 
 ## Code of Conduct
 

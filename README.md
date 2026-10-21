@@ -4,10 +4,10 @@
   <p><strong>A modern web dashboard for dae</strong></p>
 
   <p>
-    <a href="https://github.com/daeuniverse/daed/actions/workflows/release-please.yml"><img src="https://img.shields.io/github/actions/workflow/status/daeuniverse/daed/release-please.yml?style=for-the-badge" alt="Build Status" /></a>
-    <a href="https://github.com/daeuniverse/daed/releases"><img src="https://img.shields.io/github/v/release/daeuniverse/daed?style=for-the-badge" alt="Release" /></a>
-    <a href="https://github.com/daeuniverse/daed/blob/main/LICENSE"><img src="https://img.shields.io/github/license/daeuniverse/daed?style=for-the-badge" alt="License" /></a>
-    <a href="https://github.com/daeuniverse/daed/pulls"><img src="https://img.shields.io/github/issues-pr-closed/daeuniverse/daed?style=for-the-badge" alt="Pull Requests" /></a>
+    <a href="https://github.com/1unns/daed/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/1unns/daed/ci.yml?style=for-the-badge" alt="Build Status" /></a>
+    <a href="https://github.com/1unns/daed/blob/main/LICENSE"><img src="https://img.shields.io/github/license/1unns/daed?style=for-the-badge" alt="License" /></a>
+    <a href="https://github.com/1unns/daed/pulls"><img src="https://img.shields.io/github/issues-pr-closed/1unns/daed?style=for-the-badge" alt="Pull Requests" /></a>
+    <a href="https://github.com/daeuniverse/daed/releases"><img src="https://img.shields.io/github/v/release/daeuniverse/daed?style=for-the-badge" alt="Upstream Release" /></a>
   </p>
 
   <p>
@@ -18,6 +18,19 @@
     <a href="#license">License</a>
   </p>
 </div>
+
+---
+
+## ⚠️ This Is a Development Fork
+
+> **This repository (`1unns/daed`) is a development fork. It is *not* an official distribution channel.**
+>
+> - Official releases are produced and published by [**daeuniverse/daed**](https://github.com/daeuniverse/daed). Install from there unless you specifically want to test unreleased work.
+> - The `Release` badge above, the Docker images, and the distribution packages all refer to the **upstream** project. Artifacts built from this fork are unsigned, untagged, and not covered by any upstream support commitment.
+> - `wing` and `dae-core` are pinned to [`1unns/dae-wing`](https://github.com/1unns/dae-wing) and [`1unns/dae`](https://github.com/1unns/dae), not to the upstream repositories. Code in this fork may therefore differ from what upstream ships.
+> - Please report bugs you hit **in official releases** to [daeuniverse/daed/issues](https://github.com/daeuniverse/daed/issues). Report issues specific to this fork to [1unns/daed/issues](https://github.com/1unns/daed/issues).
+>
+> For the governance and security implications of this split, see [`SECURITY.md`](./SECURITY.md).
 
 ---
 
@@ -111,14 +124,18 @@ Access the dashboard at `http://localhost:2023`.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) >= 20
-- [pnpm](https://pnpm.io/) >= 9
+- [Node.js](https://nodejs.org/) >= 22
+- [pnpm](https://pnpm.io/) 10.24.0 — pinned in the `packageManager` field of `package.json`
+
+The frontend alone needs no Go toolchain. Building the `daed` binary does; see
+[`docs/build.md`](./docs/build.md) for the Go, Clang and LLVM prerequisites.
 
 ### Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/daeuniverse/daed.git
+# Clone with submodules. wing/ and the nested wing/dae-core/ hold the Go backend
+# and the eBPF data plane; without them `make` cannot build a binary.
+git clone --recursive https://github.com/1unns/daed.git
 cd daed
 
 # Install dependencies
@@ -128,14 +145,25 @@ pnpm install
 pnpm dev
 ```
 
+Already cloned without `--recursive`? Run `git submodule update --init --recursive`.
+
 ### Available Scripts
 
-| Command        | Description              |
-| -------------- | ------------------------ |
-| `pnpm dev`     | Start development server |
-| `pnpm build`   | Build for production     |
-| `pnpm lint`    | Lint and fix code        |
-| `pnpm codegen` | Generate GraphQL types   |
+| Command            | Description                        |
+| ------------------ | ---------------------------------- |
+| `pnpm dev`         | Start development server           |
+| `pnpm build`       | Build for production               |
+| `pnpm lint`        | Lint and fix code                  |
+| `pnpm test`        | Run the test suites                |
+| `pnpm check-types` | Type-check without emitting        |
+| `pnpm codegen`     | Generate GraphQL types             |
+
+## 🧰 Operations
+
+Operating an instance — backup, upgrade, rollback, credential rotation, incident
+response — is documented step by step in the
+[Runbook](./docs/RUNBOOK.md). It is written so that someone other than the author
+can recover an instance using the document alone.
 
 ## 🤝 Contributing
 

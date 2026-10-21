@@ -1,0 +1,56 @@
+name: Feature request
+description: Suggest a change to daed
+title: "[feat] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This repository is a development fork. A change that belongs in the product should generally go upstream to [daeuniverse/daed](https://github.com/daeuniverse/daed) — open it there first unless it is specific to this fork.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What can you not do today, or what is more painful than it should be? Describe the situation, not the solution.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: What you would like to see. If it touches the GraphQL schema, mention whether it is additive or breaking.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Web dashboard (apps/web)
+        - GraphQL backend (wing)
+        - Data plane / eBPF (dae-core)
+        - Editor / LSP tooling (packages/*)
+        - Build, packaging or release
+        - Documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Anything you tried, or a simpler option that would also solve it.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues and this is not a duplicate.
+          required: true

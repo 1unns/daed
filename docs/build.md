@@ -8,16 +8,30 @@ This guide covers how to build daed from source code.
 
 | Tool                                       | Version | Required |
 | ------------------------------------------ | ------- | -------- |
-| [Node.js](https://nodejs.org/)             | >= 20   | ✅       |
-| [pnpm](https://pnpm.io/)                   | >= 9    | ✅       |
-| [Go](https://go.dev/)                      | >= 1.22 | ✅       |
+| [Node.js](https://nodejs.org/)             | >= 22   | ✅       |
+| [pnpm](https://pnpm.io/)                   | 10.24.0 | ✅       |
+| [Go](https://go.dev/)                      | >= 1.26 | ✅       |
 | [Clang](https://clang.llvm.org/)           | >= 15   | ✅       |
 | [LLVM](https://llvm.org/)                  | >= 15   | ✅       |
 | [Make](https://www.gnu.org/software/make/) | Latest  | ✅       |
 
+Node 22 and pnpm 10.24.0 are what CI and the Dockerfile use. The exact pnpm
+version is pinned in the `packageManager` field of `package.json`; the same number
+appears here, in CI, and in the `corepack prepare` line of the Dockerfile. Do not
+raise one without the others — CI's `toolchain` job checks that the Go version
+matches, but nothing yet checks the Node and pnpm numbers for you.
+
 ---
 
 ## 🚀 Quick Build
+
+Clone with `--recursive`. The repository has two levels of submodules (`wing`, and
+`wing/dae-core` nested inside it); without them the backend sources are absent.
+
+```bash
+git clone --recursive https://github.com/1unns/daed
+cd daed
+```
 
 The following command bootstraps the full stack (`daed` + `dae-wing` + `dae`):
 

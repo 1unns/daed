@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability (private)
+    url: https://github.com/1unns/daed/security/advisories/new
+    about: Do not open a public issue for a security problem. This opens a private advisory.
+  - name: Official releases and upstream issues
+    url: https://github.com/daeuniverse/daed/issues
+    about: This repository is a development fork. Bugs in official releases belong upstream.
+  - name: Deployment and usage questions
+    url: https://github.com/daeuniverse/daed/discussions
+    about: Questions about running daed are better answered in the upstream discussions.

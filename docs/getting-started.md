@@ -26,7 +26,7 @@ Download the latest release for your platform:
 
 **👉 [GitHub Releases](https://github.com/daeuniverse/daed/releases)**
 
-> 💡 **Tip:** Want to try new features? Check out [PR Builds](https://github.com/daeuniverse/daed/actions/workflows/pr-build.yml) for the latest development builds. Note that these may be unstable.
+> 💡 **Tip:** Want to try new features? Check the [CI runs](https://github.com/1unns/daed/actions/workflows/ci.yml) of this fork for the current development state. CI produces no downloadable binaries, so anything you want to run must be built from source as described in [Build from Source](./build.md).
 
 ### Quick Install (Manual)
 
@@ -164,9 +164,19 @@ docker compose up -d
 
 ### Build from Source
 
+The repository contains two levels of git submodules (`wing`, and `wing/dae-core`
+inside it). A clone without `--recursive` produces an empty backend directory, and
+the image build stops with an explicit error instead of failing obscurely later:
+
 ```bash
-git clone https://github.com/daeuniverse/daed --recursive
+git clone --recursive https://github.com/1unns/daed
 docker build -t daed .
+```
+
+If you already cloned without it:
+
+```bash
+git submodule update --init --recursive
 ```
 
 > **Note:** Docker support is currently available for i386, amd64, armv7, and arm64 architectures. See [discussion #291](https://github.com/daeuniverse/daed/discussions/291) for details.
