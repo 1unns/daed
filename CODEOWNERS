@@ -1,5 +1,38 @@
-* @daeuniverse/governance
-/src/** @daeuniverse/daed
-/docs/** @daeuniverse/docs
-CHANGELOGS.md @daeuniverse/release
-/.github/** @daeuniverse/infra
+# CODEOWNERS for 1unns/daed
+#
+# This is a development fork; see README.md. Ownership reflects who can actually
+# act on a PR here, not who owns the upstream product. The @daeuniverse teams
+# were listed previously but have no write access to this repository, so they
+# never produced a review request - the file looked like governance while
+# enforcing nothing.
+#
+# Format: <pattern> <owner>...
+# Order matters: the last matching pattern wins.
+
+# Default: everything needs the maintainer.
+* @1unns
+
+# Frontend application and its tooling.
+/apps/web/ @1unns
+/apps/web/src/** @1unns
+
+# Language tooling published as npm packages. A breaking change here reaches
+# users of dae-editor / dae-lsp, so it should not ride along with a framework
+# bump in the app.
+/packages/ @1unns
+
+# GraphQL backend, database layer and the release/bundle scripts.
+/wing/ @1unns
+
+# Build and release plumbing: images, CI, installers. A mistake here ships to
+# every user, so these are never merged without the maintainer looking.
+/.github/ @1unns
+/Dockerfile @1unns
+/publish.Dockerfile @1unns
+/docker-compose.yml @1unns
+/Makefile @1unns
+/install/ @1unns
+
+# Security policy and the review record.
+/SECURITY.md @1unns
+/CODEOWNERS @1unns

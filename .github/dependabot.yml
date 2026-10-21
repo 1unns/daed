@@ -5,10 +5,21 @@ updates:
     schedule:
       interval: daily
 
+  # The submodule pointers are the trust boundary of this repo: wing and
+  # dae-core come from personal forks, and a bumped pointer ships that code to
+  # users. A daily bot PR makes "reviewed" and "unreviewed" upgrades look the
+  # same in the history, so these are opened monthly, one at a time, and are
+  # never auto-merged. See docs/adr/0002-submodule-pin-policy.md.
   - package-ecosystem: gitsubmodule
     directory: /
     schedule:
-      interval: daily
+      interval: monthly
+    open-pull-requests-limit: 1
+    commit-message:
+      prefix: "chore(submodule)"
+    labels:
+      - dependencies
+      - needs-review
 
   - package-ecosystem: npm
     directory: /

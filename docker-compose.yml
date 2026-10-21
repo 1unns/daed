@@ -1,4 +1,5 @@
-version: '3'
+# The top-level `version` key was deprecated in Compose v2 and is ignored (newer
+# releases print a warning for it), so it is omitted.
 services:
   daed:
     privileged: true

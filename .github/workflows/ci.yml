@@ -15,6 +15,117 @@ permissions:
   contents: read
 
 jobs:
+  # wing/go.mod is the single source of truth for the Go version. Every build
+  # base image, setup-go step and documented prerequisite must agree with it;
+  # otherwise the build silently depends on GOTOOLCHAIN downloading a matching
+  # toolchain, which fails outright under GOTOOLCHAIN=local or in a locked-down
+  # environment, and makes releases non-reproducible either way.
+  toolchain:
+    name: Toolchain versions agree
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Record submodule pins
+        # Any conclusion about "the state of the code" is only reproducible
+        # against a known tree. Recording the pins here means a later claim can
+        # be tied to a specific commit instead of to prose.
+        run: |
+          {
+            echo "### Tree under test"
+            echo ""
+            echo "| Repo | Commit |"
+            echo "| --- | --- |"
+            echo "| daed (root) | \`${GITHUB_SHA}\` |"
+            git submodule status --recursive | while read -r line; do
+              sha=$(echo "$line" | sed -E 's/^[-+ ]?([0-9a-f]+).*/\1/')
+              path=$(echo "$line" | awk '{print $2}')
+              echo "| $path | \`$sha\` |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check Go version consistency
+        run: |
+          set -euo pipefail
+
+          want=$(sed -n 's/^go \([0-9]*\.[0-9]*\).*/\1/p' wing/go.mod)
+          if [ -z "$want" ]; then
+            echo "::error file=wing/go.mod::cannot read the go directive"
+            exit 1
+          fi
+          echo "wing/go.mod declares Go $want"
+
+          status=0
+
+          for file in Dockerfile publish.Dockerfile wing/Dockerfile; do
+            for got in $(grep -o 'golang:[0-9]*\.[0-9]*' "$file" | sed 's/golang://' | sort -u); do
+              if [ "$got" != "$want" ]; then
+                echo "::error file=$file::base image uses Go $got, wing/go.mod declares $want"
+                status=1
+              fi
+            done
+          done
+
+          for file in docs/build.md wing/README.md; do
+            for got in $(grep -o '>= 1\.[0-9]*' "$file" | grep -o '1\.[0-9]*' | sort -u); do
+              if [ "$got" != "$want" ]; then
+                echo "::error file=$file::prerequisite documents Go $got, wing/go.mod declares $want"
+                status=1
+              fi
+            done
+          done
+
+          # Workflows must read the version from go.mod rather than pinning it.
+          if grep -nE "go-version: *'1\.[0-9]+'" .github/workflows/*.yml; then
+            echo "::error::workflows must use go-version-file: wing/go.mod instead of a hard-coded version"
+            status=1
+          fi
+
+          exit $status
+
+      - name: Check pnpm and Node versions agree
+        # The same drift happened for pnpm (package.json pinned 10.24.0 while the
+        # README advertised ">= 9") and for Node. Every place that names a version
+        # has to be derived from one source, otherwise correcting the documents
+        # once only postpones the next divergence.
+        #
+        # The comparison lives in hack/ so it can be run locally with the same
+        # result; keeping a bash copy here would recreate the very duplication that
+        # let the versions drift in the first place.
+        run: python3 hack/verify-version-consistency.py
+
+      - name: Check CODEOWNERS paths exist
+        # A CODEOWNERS entry that points at a path this repo does not have looks
+        # like governance while requesting no review at all. The previous file
+        # referenced /src/** (actually apps/web/src) and CHANGELOGS.md (actually
+        # CHANGELOG.md), so it enforced nothing.
+        run: |
+          set -euo pipefail
+          status=0
+
+          # Strip comments and blank lines, then take the first column.
+          while read -r pattern rest; do
+            [ -z "${pattern:-}" ] && continue
+            case "$pattern" in \#*) continue ;; esac
+
+            # A bare '*' is the catch-all and matches the repo root by
+            # definition; directory patterns are checked as directories.
+            [ "$pattern" = "*" ] && continue
+
+            probe="${pattern%\*\*}"   # /apps/web/src/** -> /apps/web/src/
+            probe="${probe%/}"        # drop a trailing slash
+            probe="${probe#/}"        # CODEOWNERS paths are rooted at the repo
+
+            if [ ! -e "$probe" ]; then
+              echo "::error file=CODEOWNERS::pattern '$pattern' resolves to '$probe', which does not exist"
+              status=1
+            fi
+          done < CODEOWNERS
+
+          exit $status
+
   web:
     name: Web (lint / typecheck / test / build)
     runs-on: ubuntu-latest
@@ -46,6 +157,15 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      # Fails only on critical: the lockfile carries high and moderate advisories
+      # that are all transitive through graphiql / monaco / vscode-languageclient,
+      # and no available version of those parents clears them. Gating on `high`
+      # today would produce a permanently red job, which is how a real finding
+      # gets ignored. critical is the line that must never be crossed; the rest
+      # stays visible in the audit output on every run.
+      - name: Audit dependencies (critical blocks)
+        run: pnpm audit --prod --audit-level=critical
 
   wing:
     name: Wing (vet / build / test)
@@ -83,3 +203,94 @@ jobs:
       - name: Test
         working-directory: wing
         run: go test -tags dae_stub_ebpf ./...
+
+      # A plain govulncheck invocation, with no baseline to exempt anything: this
+      # tree is clean, so any finding is a regression. Getting here took two
+      # separate fixes and both must stay in place or this goes red —
+      #
+      #   - go.mod must require a Go patch release that contains the stdlib
+      #     fixes (1.26.0 reported 35 reachable stdlib vulnerabilities; 1.26.10
+      #     reports none);
+      #   - the jwt and cors modules must stay at or above the fixed versions.
+      #
+      # If this fails, read the finding rather than pinning the scanner: it names
+      # the module and the version that fixes it.
+      #
+      # Pinned rather than @latest so a scanner change cannot alter what this job
+      # means without a commit.
+      - name: Install govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@v1.1.4
+
+      - name: Scan for known vulnerabilities
+        run: govulncheck -tags dae_stub_ebpf ./...
+
+  # The release build (release-please.yml, build-bundle) cross-compiles for every
+  # architecture it ships, but nothing verified those ports until the tag was
+  # already pushed and version-bumped. A compile error there means the release is
+  # half-published and cannot be undone without deleting a tag. Building the same
+  # architecture set on every pull request moves that failure to where it is
+  # still cheap to fix.
+  #
+  # Only the ports that release builds with CGO_ENABLED=0 are listed: the release
+  # matrix's mips* entries set cgo_enabled=1 and need cross GCC toolchains, which
+  # are not worth installing on every PR. amd64 is built once here (the release's
+  # GOAMD64 v1/v2/v3 variants are the same source, and v1 is the strictest).
+  #
+  # Only compilation is checked. The test suite runs in the single-architecture
+  # `wing` job above, because a cross-compiled test binary cannot be executed on
+  # the runner.
+  wing-build-matrix:
+    name: Wing build ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            goamd64: v1
+          - goos: linux
+            goarch: arm64
+          # Quoted: an unquoted 386 parses as a YAML integer, so the matrix value
+          # would not be the string GOARCH expects.
+          - goos: linux
+            goarch: '386'
+          - goos: linux
+            goarch: riscv64
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: wing/go.mod
+          cache-dependency-path: wing/go.sum
+
+      - name: Generate GraphQL resolver and input
+        working-directory: wing
+        run: go generate ./graphql/service/config/global/
+
+      # CGO_ENABLED=0 keeps the cross build hermetic and matches how the release
+      # image is produced, so whatever links here links there.
+      - name: Build
+        working-directory: wing
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          GOAMD64: ${{ matrix.goamd64 }}
+          CGO_ENABLED: 0
+        run: go build -tags dae_stub_ebpf ./...
+
+      # go build alone can miss a package whose only reference is behind a build
+      # constraint that this tag combination enables, so the port is also
+      # type-checked. vet compiles the test files too, which means the new tests
+      # in this repository are at least compiled for the architecture that ships.
+      - name: Vet
+        working-directory: wing
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          GOAMD64: ${{ matrix.goamd64 }}
+          CGO_ENABLED: 0
+        run: go vet -tags dae_stub_ebpf ./...

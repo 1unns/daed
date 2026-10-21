@@ -1,3 +1,60 @@
+# Keep the build context small and, more importantly, keep things that must not
+# be copied into an image out of it: git history (including the credentials a
+# developer may have in .git/config), local databases, logs and prior build
+# output.
+#
+# NOTE: wing/ is deliberately NOT ignored. The bundle stage copies it because it
+# builds the Go backend from it. Everything inside wing/ that is build output or
+# local state is excluded individually below.
+
+# --- Editor and local tooling state -----------------------------------------
+# NOTE: .git is deliberately NOT ignored. wing/Makefile resolves the submodule
+# (git submodule update --init --recursive dae-core) when the eBPF object is
+# missing, and the bundle target reads the commit for its version fallback.
+# Dropping .git would turn "bpf object absent" into an unexplained build
+# failure. If you exclude it to shrink the context, verify that
+# dae-core/control/bpf_bpfeb.o is already present in the context first.
+.gitmodules.d.mk
+.github
+.vscode
+.idea
+.husky
+.workbuddy
+*.swp
+*.swo
+*~
+
+# --- Node -------------------------------------------------------------------
 node_modules
+**/node_modules
+**/dist
+**/.turbo
+.npm
+.pnpm-store
+*.tsbuildinfo
+
+# --- Go and build artefacts -------------------------------------------------
+**/go-mod
+**/vendor
+wing/dae-wing
+wing/daed
+**/webrender/web
+wing/generated_*.go
+wing/schema.graphql
+wing/outline.json
+
+# --- Local data and logs ----------------------------------------------------
+*.db
+*.db-shm
+*.db-wal
+*.log
+logs
+
+# --- OS noise ---------------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+# --- Files this Dockerfile does not need ------------------------------------
 Dockerfile
+publish.Dockerfile
 docker-compose.yml
